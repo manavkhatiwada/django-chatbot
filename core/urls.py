@@ -8,5 +8,5 @@ urlpatterns = [
     path('api/token/refresh/',
          jwt_views.TokenRefreshView.as_view(),
          name ='token_refresh'),
-    # path('', include('app.urls')),
+    path('', include('users.urls')),
 ]

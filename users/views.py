@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework import generics
+from .serializers import Registerserializer
 # # Create your views here.
 # @api_view(['POST'])
 # def register(request):
@@ -21,3 +22,8 @@ class HelloView(APIView):
     def get(self, request):
         content = {'message': 'Hello, i am auth'}
         return Response(content)
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = Registerserializer
+

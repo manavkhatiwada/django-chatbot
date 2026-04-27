@@ -3,7 +3,7 @@ from django.conf import settings
 
 # Create your models here.
 class Conversation(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="conversation")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="conversations")
     title = models.CharField(max_length=255,default="New chat")
     created_at = models.DateTimeField(auto_now=True)
 

@@ -1,5 +1,6 @@
 from django.urls import path,include
 from rest_framework_simplejwt import views as jwt_views
+from django.contrib import admin
 
 urlpatterns = [
     path('api/token/',
@@ -9,4 +10,5 @@ urlpatterns = [
          jwt_views.TokenRefreshView.as_view(),
          name ='token_refresh'),
     path('', include('users.urls')),
+    path('admin/', admin.site.urls),
 ]

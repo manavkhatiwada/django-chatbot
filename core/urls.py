@@ -11,4 +11,5 @@ urlpatterns = [
          name ='token_refresh'),
     path('', include('users.urls')),
     path('admin/', admin.site.urls),
+    path("api/",include('chat.urls'))
 ]

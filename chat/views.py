@@ -24,4 +24,13 @@ class ListConversationView(APIView):
         serializer = ConversationSerialzer(conversations,many=True)
         return Response(serializer.data)
     
-
+class GetConversationView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self,request,id):
+        try:
+            conversation = Conversation.objects.get(id=id,user=request.user)
+        except Conversation.DoesNotExist:
+            return Response({"error": "Conversation not found"}, status=404)
+        
+        serializer = ConversationSerialzer(conversation)
+        return Response(serializer.data)

@@ -34,3 +34,46 @@ class GetConversationView(APIView):
         
         serializer = ConversationSerialzer(conversation)
         return Response(serializer.data)
+
+
+
+class SendMessage(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self,request):
+        conversation_id = request.data.get("conversation_id")
+        user_message = request.data.get("message")
+
+
+        if not conversation_id or not user_message:
+             return Response({"error": "conversation_id and message are required"}, status=400)
+        
+        try:
+            conversation = Conversation.objects.get(id=conversation,user=request.user)
+        except Conversation.DoesNotExist:
+            return Response({"error": "Conversation not found"}, status=404)
+        
+
+
+        Message.objects.create(
+            conversation=conversation,
+            sender="user",
+            content=user_message
+        )
+
+        ai_respone = "ai response will be adeded later"
+
+        Message.objects.create(
+            conversation=conversation,
+            sender="ai",
+            content=ai_respone
+        )
+
+
+        return Response({
+            "user_message":user_message,
+            "ai_response":user_message.content
+        })
+
+
+

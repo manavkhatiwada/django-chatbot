@@ -37,7 +37,7 @@ class GetConversationView(APIView):
 
 
 
-class SendMessage(APIView):
+class SendMessageView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self,request):

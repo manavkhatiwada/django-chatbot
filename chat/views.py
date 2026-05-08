@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 # Create your views here.
-
+from ai.gemini import generate_ai_response
 
 class CreateConversationView(APIView):
     permission_classes = [IsAuthenticated]
@@ -37,23 +37,21 @@ class GetConversationView(APIView):
 
 
 
+
 class SendMessageView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self,request):
+    def post(self, request):
         conversation_id = request.data.get("conversation_id")
         user_message = request.data.get("message")
 
-
         if not conversation_id or not user_message:
-             return Response({"error": "conversation_id and message are required"}, status=400)
-        
+            return Response({"error": "conversation_id and message are required"}, status=400)
+
         try:
-            conversation = Conversation.objects.get(id=conversation,user=request.user)
+            conversation = Conversation.objects.get(id=conversation_id, user=request.user)
         except Conversation.DoesNotExist:
             return Response({"error": "Conversation not found"}, status=404)
-        
-
 
         Message.objects.create(
             conversation=conversation,
@@ -61,19 +59,16 @@ class SendMessageView(APIView):
             content=user_message
         )
 
-        ai_respone = "ai response will be adeded later"
+        ai_response = generate_ai_response(user_message)
 
-        Message.objects.create(
+
+        ai_message = Message.objects.create(
             conversation=conversation,
             sender="ai",
-            content=ai_respone
+            content=ai_response
         )
 
-
         return Response({
-            "user_message":user_message,
-            "ai_response":user_message.content
+            "user_message": user_message,
+            "ai_response": ai_message.content
         })
-
-
-

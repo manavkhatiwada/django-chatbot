@@ -22,6 +22,6 @@ def get_available_model():
 
 model = get_available_model()
 
-def generate_ai_response(user_message):
-    response = model.generate_content(user_message)
+def generate_ai_response(prompt):
+    response = model.generate_content(prompt)
     return response.text

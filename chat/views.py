@@ -58,8 +58,16 @@ class SendMessageView(APIView):
             sender="user",
             content=user_message
         )
+        messages = Message.objects.filter(
+            conversation = conversation,
+        ).order_by("timestamp")
+        
+        chat_history = ""
+        for msg in messages:
+            chat_history  += f"{msg.sender}:{msg.content}\n"
 
-        ai_response = generate_ai_response(user_message)
+        
+        ai_response = generate_ai_response(chat_history)
 
 
         ai_message = Message.objects.create(
@@ -67,6 +75,11 @@ class SendMessageView(APIView):
             sender="ai",
             content=ai_response
         )
+
+
+
+
+        
 
         return Response({
             "user_message": user_message,

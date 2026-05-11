@@ -43,7 +43,7 @@ class ListConversationView(APIView):
 class ConversationDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get_object(self,user,id):
+    def get_object(self,id,user):
         try:
             return Conversation.objects.get(id=id,user=user)
         except Conversation.DoesNotExist:
@@ -79,18 +79,17 @@ class ConversationDetailView(APIView):
 class ConversationMessagesView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get_object(self,id,user):
+    def get(self,request,id):
         try :
-            conversation = Conversation.objects.get(id=id,user=user)
+            conversation = Conversation.objects.get(id=id,user=request.user)
         except Conversation.DoesNotExist:
-            return None
+            return Response({"error": "Conversation not found"}, status=404)
 
         messages = Message.objects.filter(
             conversation=conversation
         ).order_by("timestamp")
 
-
-        serializer = MessageSerialzer(messages)
+        serializer = MessageSerialzer(messages, many=True)
 
         return Response(serializer.data)
 

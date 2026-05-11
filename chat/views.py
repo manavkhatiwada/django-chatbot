@@ -81,11 +81,19 @@ class ConversationMessagesView(APIView):
 
     def get_object(self,id,user):
         try :
-            Conversation = Conversation.objects.get(id=id,user=user)
+            conversation = Conversation.objects.get(id=id,user=user)
         except Conversation.DoesNotExist:
             return None
 
-    
+        messages = Message.objects.filter(
+            conversation=conversation
+        ).order_by("timestamp")
+
+
+        serializer = MessageSerialzer(messages)
+
+        return Response(serializer.data)
+
     
 
 

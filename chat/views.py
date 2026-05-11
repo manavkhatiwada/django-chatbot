@@ -24,17 +24,69 @@ class ListConversationView(APIView):
         serializer = ConversationSerialzer(conversations,many=True)
         return Response(serializer.data)
     
-class GetConversationView(APIView):
+# class ConversationDetailView(APIView):
+#     permission_classes = [IsAuthenticated]
+    
+
+
+#     def get(self,request,id):
+#         try:
+#             conversation = Conversation.objects.get(id=id,user=request.user)
+#         except Conversation.DoesNotExist:
+#             return Response({"error": "Conversation not found"}, status=404)
+        
+#         serializer = ConversationSerialzer(conversation)
+#         return Response(serializer.data)
+    
+
+    
+class ConversationDetailView(APIView):
     permission_classes = [IsAuthenticated]
-    def get(self,request,id):
+
+    def get_object(self,user,id):
         try:
-            conversation = Conversation.objects.get(id=id,user=request.user)
+            return Conversation.objects.get(id=id,user=user)
         except Conversation.DoesNotExist:
-            return Response({"error": "Conversation not found"}, status=404)
+            return None
+        
+    def get(self,request,id):
+
+        conversation = self.get_object(id,request.user)
+
+        if not conversation:
+            return Response(
+                {"error":"conversation not found"},status=404
+            )
         
         serializer = ConversationSerialzer(conversation)
-        return Response(serializer.data)
 
+        return Response (serializer.data)
+    def delete(self,request,id):
+
+        conversation = self.get_object(id,request.user)
+        if not conversation:
+            return Response(
+                {"error":"conversation not found"},status=404
+            )
+        
+        conversation.delete()
+
+        return Response({
+            "message":
+            "conversation deleted sucessfully"
+        })
+                
+class ConversationMessagesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self,id,user):
+        try :
+            Conversation = Conversation.objects.get(id=id,user=user)
+        except Conversation.DoesNotExist:
+            return None
+
+    
+    
 
 
 

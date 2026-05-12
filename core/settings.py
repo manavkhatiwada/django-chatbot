@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'ai',
     'chat',
     'users',
+    'rag',
     'rest_framework',
 ]
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Conversation, Message
+from .models import Conversation, Message,PdfDocument
 
 
 class MessageSerialzer(serializers.ModelSerializer):
@@ -13,3 +13,8 @@ class ConversationSerialzer(serializers.ModelSerializer):
     class Meta:
         model = Conversation
         fields = ['id','created_at','title','messages']
+
+class PdfUploadSerialzer(serializers.ModelSerializer):
+    class Meta:
+        Model = PdfDocument
+        fields = ["id","file"]

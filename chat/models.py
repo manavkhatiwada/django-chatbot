@@ -23,3 +23,12 @@ class Message(models.Model):
     def __str__(self):
         return f"{self.sender}:{self.content[:30]}"
     
+class PdfDocument(models.Model):
+       user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+       file = models.FileField(upload_to="pdfs/")
+       uploaded_at = models.DateTimeField(auto_now_add=True)
+
+       def __str__(self):
+            return f"{self.file.name}"
+
+    

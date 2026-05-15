@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ListConversationView,CreateConversationView,SendMessageView,ConversationDetailView,ConversationMessagesView
+from .views import ListConversationView,CreateConversationView,SendMessageView,ConversationDetailView,ConversationMessagesView,PDFUploadView
 
 
 urlpatterns = [
@@ -9,6 +9,5 @@ urlpatterns = [
     # path("conversation/<int:id>",),
     path("conversations/<int:id>/messages/",ConversationMessagesView.as_view()),
     path("message/",SendMessageView.as_view()),
-    
-
+    path("upload/", PDFUploadView.as_view()),
 ]

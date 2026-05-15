@@ -16,5 +16,5 @@ class ConversationSerialzer(serializers.ModelSerializer):
 
 class PdfUploadSerialzer(serializers.ModelSerializer):
     class Meta:
-        Model = PdfDocument
+        model = PdfDocument
         fields = ["id","file"]

@@ -4,6 +4,7 @@ from .models import Conversation,Message,PdfDocument
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rag.chroma import search_chunk
 # Create your views here.
 from ai.gemini import generate_ai_response
 
@@ -103,6 +104,7 @@ class SendMessageView(APIView):
     def post(self, request):
         conversation_id = request.data.get("conversation_id")
         user_message = request.data.get("message")
+        pdf_id = request.data.get("pdf_id")
 
         if not conversation_id or not user_message:
             return Response({"error": "conversation_id and message are required"}, status=400)
@@ -120,13 +122,45 @@ class SendMessageView(APIView):
         messages = Message.objects.filter(
             conversation = conversation,
         ).order_by("timestamp")
-        
+               
+         # CHAT HISTORY
+
         chat_history = ""
         for msg in messages:
             chat_history  += f"{msg.sender}:{msg.content}\n"
 
+        #RAG Context 
+        pdf = None 
+
         
-        ai_response = generate_ai_response(chat_history)
+        context = ''
+
+        if pdf:
+
+            chunks = search_chunk(pdf.id,user_message)
+            context = "\n\n".join(chunks)
+
+            prompt = f"""
+You are a helpful AI assistant.
+
+CHAT HISTORY:
+{chat_history}
+
+PDF CONTEXT:
+{context}
+
+USER QUESTION:
+{user_message}
+
+Rules:
+- Answer naturally
+- Use PDF context if relevant
+- If answer is not in PDF, answer normally
+"""
+
+
+
+        ai_response = generate_ai_response(prompt)
 
 
         ai_message = Message.objects.create(
